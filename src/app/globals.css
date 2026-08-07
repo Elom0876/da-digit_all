@@ -1,26 +1,113 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ------------------------------------------------------------------
+   DA Digit All — système de tokens
+   Palette dérivée du logo : orange #F2921F, violet profond #241B4B
+------------------------------------------------------------------- */
+@theme {
+  /* Couleurs */
+  --color-canvas: #fbf7f2; /* blanc cassé — fond principal */
+  --color-sand: #f1e7d9; /* beige — surfaces secondaires */
+  --color-ink: #211345; /* violet profond du logo — texte & structure */
+  --color-violet: #6b3fd4; /* violet lumineux — accent secondaire */
+  --color-orange: #f49220; /* orange du logo — accent principal */
+  --color-violet: #211345; /* violet — données, états, liens */
+  --color-muted: #6f668c; /* texte secondaire */
+  --color-hairline: #e6dcd0; /* filets et bordures */
+
+  /* Typographie */
+  --font-display: var(--font-archivo), "Archivo", system-ui, sans-serif;
+  --font-sans: var(--font-inter), "Inter Tight", system-ui, sans-serif;
+  --font-mono: var(--font-mono), "JetBrains Mono", ui-monospace, monospace;
+
+  --text-eyebrow: 0.6875rem;
+  --text-display: clamp(2.75rem, 7vw, 6rem);
+  --text-title: clamp(1.875rem, 3.6vw, 3.25rem);
+
+  /* Rythme */
+  --radius-card: 20px;
+  --radius-device: 14px;
+
+  /* Motion */
+  --ease-device: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  body {
+    background-color: var(--color-canvas);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+  }
+
+  /* Les grands titres sont légèrement élargis : c'est ce qui rapproche
+     Archivo du lettrage du logo. */
+  .font-display {
+    font-variation-settings: "wdth" 108;
+    font-weight: 600;
+  }
+
+  ::selection {
+    background: var(--color-orange);
+    color: #fff;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-violet);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  /* Lenis */
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+  .lenis.lenis-stopped {
+    overflow: hidden;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@utility eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--text-eyebrow);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+/* Bandeau de logos en défilement continu. La translation porte sur la moitié
+   de la piste : la liste est dupliquée, donc le retour à zéro est invisible. */
+@keyframes defile {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .piste-logos {
+    animation: defile 38s linear infinite;
+  }
+  .bandeau-logos:hover .piste-logos {
+    animation-play-state: paused;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
