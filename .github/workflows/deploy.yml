@@ -60,6 +60,7 @@ jobs:
         with:
           name: standalone-build
           path: .next/standalone/
+          include-hidden-files: true
           retention-days: 1
 
   # ─────────────────────────────────────────────────────────────────────────
@@ -73,7 +74,7 @@ jobs:
     env:
       REMOTE_DIR: /var/www/html/dadigital/nextjs-site
       SERVICE: dadigitall-nextjs
-      PORT: "3001"
+      PORT: "3013"
 
     steps:
       - name: Download build artifacts

@@ -18,7 +18,7 @@ set -euo pipefail
 REMOTE_HOST="dadigitall-deploy"
 REMOTE_DIR="/var/www/html/dadigital/nextjs-site"
 SERVICE="dadigitall-nextjs"
-PORT=3001
+PORT=3013
 
 # ── Couleurs ───────────────────────────────────────────────────────────────
 
