@@ -7,3 +7,9 @@ This version has breaking changes — APIs, conventions, and file structure may 
 This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
 <!-- END:nextjs-agent-rules -->
+
+# Règles du projet
+
+## Pas d'emojis dans le code
+
+NE JAMAIS utiliser d'emojis dans le code, les fichiers de configuration, les workflows CI/CD, les scripts, la documentation technique ou tout autre fichier du projet. Les emojis sont interdits partout dans le codebase, y compris dans les messages de commit, les commentaires, les changelogs générés et les descriptions de release.

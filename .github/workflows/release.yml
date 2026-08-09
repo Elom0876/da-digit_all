@@ -1,0 +1,103 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag à publier (ex: v1.0.0)"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Create GitHub release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Determine tag
+        id: tag
+        run: |
+          if [ -n "${{ inputs.tag }}" ]; then
+            echo "tag=${{ inputs.tag }}" >> $GITHUB_OUTPUT
+          else
+            echo "tag=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Generate changelog
+        id: changelog
+        run: |
+          # Récupérer le tag précédent
+          CURRENT_TAG="${{ steps.tag.outputs.tag }}"
+          PREVIOUS_TAG=$(git tag --sort=-version:refname | grep -v "^${CURRENT_TAG}$" | head -1)
+
+          if [ -z "$PREVIOUS_TAG" ]; then
+            # Premier release : tous les commits depuis le début
+            RANGE=""
+            HEADER="## ${CURRENT_TAG} — Première release"
+          else
+            RANGE="${PREVIOUS_TAG}..${CURRENT_TAG}"
+            HEADER="## ${CURRENT_TAG}\n\n### Changes depuis ${PREVIOUS_TAG}\n"
+          fi
+
+          # Générer le changelog groupé par type de commit
+          {
+            echo -e "$HEADER\n"
+
+            if [ -n "$RANGE" ]; then
+              COMMITS=$(git log ${RANGE} --pretty=format:"%H|%s" --no-merges)
+            else
+              COMMITS=$(git log --pretty=format:"%H|%s" --no-merges)
+            fi
+
+              echo "### Features"
+              echo "$COMMITS" | grep -iE "feat|feature|ajout|ajoute|nouvelle" | while IFS='|' read -r hash msg; do
+                echo "- ${msg} ([${hash:0:7}](https://github.com/${{ github.repository }}/commit/${hash}))"
+              done || true
+              echo ""
+
+              echo "### Fixes"
+              echo "$COMMITS" | grep -iE "fix|corrige|correction|bug" | while IFS='|' read -r hash msg; do
+                echo "- ${msg} ([${hash:0:7}](https://github.com/${{ github.repository }}/commit/${hash}))"
+              done || true
+              echo ""
+
+              echo "### Documentation"
+              echo "$COMMITS" | grep -iE "doc|readme|changelog|documentation" | while IFS='|' read -r hash msg; do
+                echo "- ${msg} ([${hash:0:7}](https://github.com/${{ github.repository }}/commit/${hash}))"
+              done || true
+              echo ""
+
+              echo "### Maintenance & CI"
+              echo "$COMMITS" | grep -iE "ci|chore|refactor|build|deploy|lint|type" | while IFS='|' read -r hash msg; do
+                echo "- ${msg} ([${hash:0:7}](https://github.com/${{ github.repository }}/commit/${hash}))"
+              done || true
+              echo ""
+
+              echo "### Autres"
+              echo "$COMMITS" | grep -viE "feat|feature|ajout|ajoute|nouvelle|fix|corrige|correction|bug|doc|readme|changelog|documentation|ci|chore|refactor|build|deploy|lint|type" | while IFS='|' read -r hash msg; do
+                echo "- ${msg} ([${hash:0:7}](https://github.com/${{ github.repository }}/commit/${hash}))"
+              done || true
+          } > CHANGELOG_TEMP.md
+
+          echo "## Changelog généré :"
+          cat CHANGELOG_TEMP.md
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tag.outputs.tag }}
+          name: ${{ steps.tag.outputs.tag }}
+          body_path: CHANGELOG_TEMP.md
+          draft: false
+          prerelease: false
+          generate_release_notes: true

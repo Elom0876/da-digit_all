@@ -1,7 +1,10 @@
-name: Deploy
+name: CI/CD
 
 on:
   push:
+    branches:
+      - main
+  pull_request:
     branches:
       - main
   workflow_dispatch:
@@ -12,14 +15,17 @@ concurrency:
 
 env:
   NODE_VERSION: "20"
-  REMOTE_DIR: /var/www/html/dadigital/nextjs-site
-  SERVICE: dadigitall-nextjs
-  PORT: "3001"
 
 jobs:
-  deploy:
-    name: Build & deploy to VPS
+  # ─────────────────────────────────────────────────────────────────────────
+  # Vérifications : s'exécute sur chaque PR et sur chaque push vers main.
+  # Garantit que le code est suffisamment clean pour être mergé.
+  # ─────────────────────────────────────────────────────────────────────────
+  verify:
+    name: Lint, type-check & build
     runs-on: ubuntu-latest
+    outputs:
+      build-ok: ${{ steps.build.outcome == 'success' }}
 
     steps:
       - name: Checkout
@@ -41,6 +47,7 @@ jobs:
         run: npm run type-check
 
       - name: Build (standalone)
+        id: build
         run: npm run build
 
       - name: Prepare standalone artifacts
@@ -48,22 +55,39 @@ jobs:
           cp -r .next/static .next/standalone/.next/static
           cp -r public .next/standalone/public
 
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: standalone-build
+          path: .next/standalone/
+          retention-days: 1
+
+  # ─────────────────────────────────────────────────────────────────────────
+  # Déploiement : s'exécute uniquement sur main, après que verify a passé.
+  # ─────────────────────────────────────────────────────────────────────────
+  deploy:
+    name: Deploy to VPS
+    runs-on: ubuntu-latest
+    needs: verify
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    env:
+      REMOTE_DIR: /var/www/html/dadigital/nextjs-site
+      SERVICE: dadigitall-nextjs
+      PORT: "3001"
+
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: standalone-build
+          path: .next/standalone/
+
       - name: Configure SSH
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.VPS_SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
           ssh-keyscan -p ${{ secrets.VPS_PORT }} -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts 2>/dev/null
-          # Config SSH pour que rsync et ssh utilisent le bon port automatiquement
-          cat > ~/.ssh/config << SSHCFG
-          Host ${{ secrets.VPS_HOST }}
-            Port ${{ secrets.VPS_PORT }}
-            User ${{ secrets.VPS_USER }}
-            IdentityFile ~/.ssh/id_ed25519
-            IdentitiesOnly yes
-            StrictHostKeyChecking accept-new
-          SSHCFG
-          chmod 600 ~/.ssh/config
 
       - name: Deploy to VPS
         run: |
