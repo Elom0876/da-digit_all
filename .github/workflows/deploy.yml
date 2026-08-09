@@ -48,20 +48,33 @@ jobs:
           echo "${{ secrets.VPS_SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
           ssh-keyscan -p ${{ secrets.VPS_PORT }} -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts 2>/dev/null
+          # Config SSH pour que rsync et ssh utilisent le bon port automatiquement
+          cat > ~/.ssh/config << SSHCFG
+          Host ${{ secrets.VPS_HOST }}
+            Port ${{ secrets.VPS_PORT }}
+            User ${{ secrets.VPS_USER }}
+            IdentityFile ~/.ssh/id_ed25519
+            IdentitiesOnly yes
+            StrictHostKeyChecking accept-new
+          SSHCFG
+          chmod 600 ~/.ssh/config
 
       - name: Deploy to VPS
         run: |
           rsync -avz --delete \
+            -e "ssh -p ${{ secrets.VPS_PORT }} -i ~/.ssh/id_ed25519" \
             --exclude='.env.local' \
             .next/standalone/ \
             ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:${{ env.REMOTE_DIR }}/
 
       - name: Restart service & verify
         run: |
-          ssh -p ${{ secrets.VPS_PORT }} ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} \
+          ssh -p ${{ secrets.VPS_PORT }} -i ~/.ssh/id_ed25519 \
+            ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} \
             "sudo systemctl restart ${{ env.SERVICE }} && sleep 1 && sudo systemctl is-active ${{ env.SERVICE }}"
 
-          HTTP_CODE=$(ssh -p ${{ secrets.VPS_PORT }} ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} \
+          HTTP_CODE=$(ssh -p ${{ secrets.VPS_PORT }} -i ~/.ssh/id_ed25519 \
+            ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} \
             "curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:${{ env.PORT }}/")
 
           echo "HTTP response: $HTTP_CODE"
