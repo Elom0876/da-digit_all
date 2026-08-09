@@ -71,7 +71,7 @@ jobs:
         run: |
           ssh -p ${{ secrets.VPS_PORT }} -i ~/.ssh/id_ed25519 \
             ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} \
-            "sudo systemctl restart ${{ env.SERVICE }} && sleep 1 && sudo systemctl is-active ${{ env.SERVICE }}"
+            "sudo systemctl restart ${{ env.SERVICE }} && sudo systemctl is-active --wait ${{ env.SERVICE }}"
 
           HTTP_CODE=$(ssh -p ${{ secrets.VPS_PORT }} -i ~/.ssh/id_ed25519 \
             ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} \
