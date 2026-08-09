@@ -1,0 +1,79 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: false
+
+env:
+  NODE_VERSION: "20"
+  REMOTE_DIR: /var/www/html/dadigital/nextjs-site
+  SERVICE: dadigitall-nextjs
+  PORT: "3001"
+
+jobs:
+  deploy:
+    name: Build & deploy to VPS
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build (standalone)
+        run: npm run build
+
+      - name: Prepare standalone artifacts
+        run: |
+          cp -r .next/static .next/standalone/.next/static
+          cp -r public .next/standalone/public
+
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -p ${{ secrets.VPS_PORT }} -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts 2>/dev/null
+
+      - name: Deploy to VPS
+        run: |
+          rsync -avz --delete \
+            --exclude='.env.local' \
+            .next/standalone/ \
+            ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:${{ env.REMOTE_DIR }}/
+
+      - name: Restart service & verify
+        run: |
+          ssh -p ${{ secrets.VPS_PORT }} ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} \
+            "sudo systemctl restart ${{ env.SERVICE }} && sleep 1 && sudo systemctl is-active ${{ env.SERVICE }}"
+
+          HTTP_CODE=$(ssh -p ${{ secrets.VPS_PORT }} ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} \
+            "curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:${{ env.PORT }}/")
+
+          echo "HTTP response: $HTTP_CODE"
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "::error::Site responded with HTTP $HTTP_CODE"
+            exit 1
+          fi
+
+      - name: Verify HTTPS
+        run: |
+          HTTPS_CODE=$(curl -sL -o /dev/null -w '%{http_code}' https://www.dadigitall.com/)
+          echo "HTTPS response: $HTTPS_CODE"
+          if [ "$HTTPS_CODE" != "200" ]; then
+            echo "::warning::HTTPS responded with $HTTPS_CODE"
+          fi
