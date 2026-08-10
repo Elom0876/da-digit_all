@@ -66,10 +66,13 @@ export default function Footer() {
                 href="tel:+2290167086534"
                 className="text-muted transition-colors hover:text-ink"
               >
-                +229 01 42 26 08 09
+                +229 01 67 08 65 34
               </a>
             </li>
-            <li className="pt-2 text-muted">Zone des Ambassades, Cotonou</li>
+            <li className="pt-2 text-muted">
+              1360, Rue 12.052 — Les Cocotiers
+            </li>
+            <li className="text-muted">Cotonou, Bénin</li>
             <li className="text-muted">Lundi – vendredi, 8h – 18h</li>
           </ul>
         </div>
