@@ -8,6 +8,11 @@ export const metadata: Metadata = {
   title: "Qui sommes-nous ?",
   description:
     "Créée en 2021, DA Digit All réunit des ingénieurs juniors et seniors totalisant plus de 25 ans d'expérience cumulée. Vision, valeurs, approche, domaines d'activités et équipe.",
+  openGraph: {
+    title: "Qui sommes-nous ? · DA Digit All",
+    description:
+      "Créée en 2021, DA Digit All réunit des ingénieurs totalisant plus de 25 ans d'expérience cumulée. Vision, valeurs, approche et équipe.",
+  },
 };
 
 const VALEURS = [

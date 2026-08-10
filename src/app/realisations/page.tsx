@@ -8,6 +8,11 @@ export const metadata: Metadata = {
   title: "Réalisations",
   description:
     "Master Digit, Garage Digit, Shop Digit, Stock Digit et CRM Digit : les solutions métier conçues et déployées par DA Digit All.",
+  openGraph: {
+    title: "Réalisations · DA Digit All",
+    description:
+      "Master Digit, Garage Digit, Shop Digit, Stock Digit et CRM Digit : cinq solutions métier en production.",
+  },
 };
 
 const PROJETS = [

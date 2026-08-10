@@ -7,38 +7,25 @@ import Button from "@/components/ui/Button";
 export const metadata: Metadata = {
   title: "Offres d'emploi",
   description:
-    "Rejoindre DA Digit All à Cotonou : développement fullstack et mobile, administration systèmes, design produit, stages et candidatures spontanées.",
+    "DA Digit All n'a pas de poste ouvert actuellement, mais étudie les candidatures spontanées et accueille des stagiaires toute l'année à Cotonou.",
+  openGraph: {
+    title: "Offres d'emploi · DA Digit All",
+    description:
+      "Candidatures spontanées et stages : rejoindre une équipe qui reste sur ses projets.",
+  },
 };
 
-const POSTES = [
-  {
-    intitule: "Développeur·se fullstack",
-    contrat: "CDI · Cotonou · 3 ans et +",
-    mission:
-      "Concevoir et développer des applications métier de bout en bout, du modèle de données à l'interface.",
-    cles: ["TypeScript", "Laravel ou NestJS", "PostgreSQL", "Tests"],
-  },
-  {
-    intitule: "Développeur·se mobile",
-    contrat: "CDI · Cotonou · 2 ans et +",
-    mission:
-      "Construire des applications terrain qui fonctionnent sans réseau : saisie hors ligne, synchronisation différée.",
-    cles: ["React Native ou Flutter", "Base locale", "Synchronisation"],
-  },
-  {
-    intitule: "Administrateur·rice systèmes et réseaux",
-    contrat: "CDI · Cotonou · 3 ans et +",
-    mission:
-      "Dimensionner, déployer et superviser les infrastructures de nos clients, avec astreinte partagée.",
-    cles: ["Linux", "Conteneurs", "CI/CD", "Supervision"],
-  },
-  {
-    intitule: "Designer produit UI/UX",
-    contrat: "CDI ou temps partiel · 2 ans et +",
-    mission:
-      "Mener la recherche utilisateur, concevoir les parcours et maintenir nos systèmes de composants.",
-    cles: ["Recherche utilisateur", "Design system", "Interfaces métier"],
-  },
+/* Aucun poste n'est ouvert pour l'instant. Plutôt que d'afficher une page
+   vide ou de laisser des offres périmées en ligne, on dit clairement ce qui
+   reste possible — et on explique ce qu'on cherche, pour que les bonnes
+   candidatures spontanées arrivent quand même. */
+
+const PROFILS = [
+  "Développement web fullstack",
+  "Développement mobile",
+  "Systèmes, réseaux et infrastructure",
+  "Design produit UI/UX",
+  "Conseil et gestion de projet",
 ];
 
 export default function Page() {
@@ -48,80 +35,94 @@ export default function Page() {
         eyebrow="Offres d'emploi"
         titre={
           <>
-            Nous recrutons des gens qui{" "}
-            <span className="text-orange">restent sur leurs projets.</span>
+            Aucun poste ouvert,{" "}
+            <span className="text-orange">
+              mais la porte ne l&apos;est pas.
+            </span>
           </>
         }
-        chapo="Chez nous, on ne livre pas pour passer au suivant : on supervise, on corrige et on fait évoluer ce qu'on a construit."
+        chapo="Nous ne recrutons pas sur un poste précis en ce moment. Nous lisons en revanche toutes les candidatures spontanées, et nous accueillons des stagiaires toute l'année."
         aside={
-          <Button href="mailto:recrutement@dadigitall.com" variant="outline">
-            Candidature spontanée
+          <Button
+            href="mailto:contact@dadigitall.com?subject=Candidature%20spontan%C3%A9e"
+            trailing={<span aria-hidden>→</span>}
+          >
+            Envoyer une candidature
           </Button>
         }
       />
 
       <section className="mx-auto max-w-[1400px] px-5 py-16 md:px-8 md:py-24">
         <div className="grid gap-px overflow-hidden rounded-[var(--radius-card)] bg-hairline md:grid-cols-2">
-          {POSTES.map((p) => (
-            <article
-              key={p.intitule}
-              className="bg-canvas p-8 transition-colors hover:bg-white md:p-10"
-            >
-              <h2 className="font-display text-[1.375rem] leading-tight tracking-[-0.03em]">
-                {p.intitule}
-              </h2>
-              <p className="mt-2 font-mono text-[0.625rem] uppercase tracking-[0.13em] text-muted">
-                {p.contrat}
-              </p>
-              <p className="mt-5 text-sm leading-relaxed text-muted">
-                {p.mission}
-              </p>
-              <ul className="mt-5 flex flex-wrap gap-2">
-                {p.cles.map((c) => (
-                  <li
-                    key={c}
-                    className="rounded-full bg-sand/70 px-3 py-1 font-mono text-[0.625rem] uppercase tracking-[0.12em] text-ink/60"
-                  >
-                    {c}
-                  </li>
-                ))}
-              </ul>
-              <div className="mt-6">
-                <Button
-                  href={`mailto:recrutement@dadigitall.com?subject=${encodeURIComponent(`Candidature — ${p.intitule}`)}`}
-                  size="sm"
-                  trailing={<span aria-hidden>→</span>}
-                >
-                  Postuler
-                </Button>
-              </div>
-            </article>
-          ))}
+          <article className="bg-canvas p-9 md:p-11">
+            <p className="eyebrow">Candidature spontanée</p>
+            <h2 className="mt-4 font-display text-[1.5rem] leading-tight tracking-[-0.03em]">
+              Dites-nous ce que vous voudriez construire
+            </h2>
+            <p className="mt-4 text-sm leading-relaxed text-muted">
+              Un CV et quelques lignes suffisent. Pas de lettre de motivation
+              type : expliquez plutôt sur quoi vous aimeriez travailler et ce
+              que vous savez déjà faire. Nous répondons à tout le monde, même
+              quand la réponse est non.
+            </p>
+            <div className="mt-7">
+              <Button
+                href="mailto:contact@dadigitall.com?subject=Candidature%20spontan%C3%A9e"
+                variant="outline"
+                size="sm"
+              >
+                contact@dadigitall.com
+              </Button>
+            </div>
+          </article>
+
+          <article className="bg-canvas p-9 md:p-11">
+            <p className="eyebrow">Stages et alternance</p>
+            <h2 className="mt-4 font-display text-[1.5rem] leading-tight tracking-[-0.03em]">
+              Des missions réelles, pas de la figuration
+            </h2>
+            <p className="mt-4 text-sm leading-relaxed text-muted">
+              Nous accueillons chaque année des étudiants de l&apos;IFRI et
+              d&apos;autres écoles de la place. Chaque stagiaire travaille sur
+              un projet client avec un encadrant dédié, et présente son travail
+              à l&apos;équipe en fin de mission.
+            </p>
+            <div className="mt-7">
+              <Button
+                href="mailto:contact@dadigitall.com?subject=Demande%20de%20stage"
+                variant="outline"
+                size="sm"
+              >
+                Postuler pour un stage
+              </Button>
+            </div>
+          </article>
         </div>
 
-        <div className="mt-12 grid gap-8 rounded-[var(--radius-card)] border border-ink/10 bg-sand/30 p-8 md:grid-cols-[1fr_1.4fr] md:p-10">
+        <div className="mt-12 grid gap-8 rounded-[var(--radius-card)] border border-ink/10 bg-sand/30 p-8 md:grid-cols-[1fr_1.3fr] md:p-10">
           <div>
-            <p className="eyebrow">Le processus</p>
-            <p className="mt-3 font-display text-[1.25rem] leading-tight tracking-[-0.025em]">
-              Quatre étapes, deux semaines, une réponse dans tous les cas.
+            <p className="eyebrow">Les profils qui nous intéressent</p>
+            <p className="mt-3 max-w-sm text-sm leading-relaxed text-muted">
+              Même sans poste ouvert, une candidature qui correspond à l&apos;un
+              de ces domaines est étudiée sérieusement.
             </p>
           </div>
-          <ol className="grid gap-x-8 gap-y-3 sm:grid-cols-2">
-            {[
-              ["01", "Candidature — CV et quelques lignes"],
-              ["02", "Échange de 45 minutes"],
-              ["03", "Exercice technique court, rémunéré"],
-              ["04", "Rencontre de l'équipe"],
-            ].map(([n, t]) => (
-              <li key={n} className="flex gap-3 text-sm text-ink/75">
-                <span className="font-mono text-[0.6875rem] tracking-[0.16em] text-orange">
-                  {n}
-                </span>
-                {t}
+          <ul className="flex flex-wrap content-start gap-2">
+            {PROFILS.map((p) => (
+              <li
+                key={p}
+                className="rounded-full bg-canvas px-4 py-2 text-sm text-ink/75 ring-1 ring-inset ring-hairline"
+              >
+                {p}
               </li>
             ))}
-          </ol>
+          </ul>
         </div>
+
+        <p className="mt-10 text-center text-sm text-muted">
+          Les postes ouverts seront publiés sur cette page dès qu&apos;il y en
+          aura.
+        </p>
       </section>
 
       <Footer />

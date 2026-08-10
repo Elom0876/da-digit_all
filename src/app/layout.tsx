@@ -34,7 +34,7 @@ const mono = JetBrains_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL("https://dadigitall.com"),
   title: {
-    default: "DA Digit All — Nous inspirons l'excellence",
+    default: "DA Digit All — Inspirer l'excellence",
     template: "%s · DA Digit All",
   },
   description:
@@ -43,11 +43,19 @@ export const metadata: Metadata = {
     type: "website",
     locale: "fr_FR",
     siteName: "DA Digit All",
-    title: "DA Digit All — Nous inspirons l'excellence",
+    title: "DA Digit All — Inspirer l'excellence",
     description:
       "De la première question posée au système qui tourne encore dans trois ans.",
   },
-  icons: { icon: "/favicon.svg" },
+  twitter: {
+    card: "summary_large_image",
+    title: "DA Digit All — Inspirer l'excellence",
+    description:
+      "Transformation digitale, développement web et mobile, infrastructure, formation et AMOA. Cotonou, Bénin.",
+  },
+  // Les icônes sont détectées automatiquement : app/icon.png et
+  // app/apple-icon.png. Rien à déclarer ici.
+  alternates: { canonical: "/" },
 };
 
 export const viewport: Viewport = {
