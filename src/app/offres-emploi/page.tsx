@@ -44,7 +44,7 @@ export default function Page() {
         chapo="Nous ne recrutons pas sur un poste précis en ce moment. Nous lisons en revanche toutes les candidatures spontanées, et nous accueillons des stagiaires toute l'année."
         aside={
           <Button
-            href="mailto:contact@dadigitall.com?subject=Candidature%20spontan%C3%A9e"
+            href="/contact#formulaire"
             trailing={<span aria-hidden>→</span>}
           >
             Envoyer une candidature
@@ -66,12 +66,8 @@ export default function Page() {
               quand la réponse est non.
             </p>
             <div className="mt-7">
-              <Button
-                href="mailto:contact@dadigitall.com?subject=Candidature%20spontan%C3%A9e"
-                variant="outline"
-                size="sm"
-              >
-                contact@dadigitall.com
+              <Button href="/contact#formulaire" variant="outline" size="sm">
+                Remplir le formulaire
               </Button>
             </div>
           </article>
@@ -89,7 +85,7 @@ export default function Page() {
             </p>
             <div className="mt-7">
               <Button
-                href="mailto:contact@dadigitall.com?subject=Demande%20de%20stage"
+                href="/contact?besoin=stage#formulaire"
                 variant="outline"
                 size="sm"
               >

@@ -21,6 +21,7 @@ type Client = {
   nom: string;
   secteur: string;
   fichier: string;
+  description: string;
   /** Solution livrée, uniquement quand elle est publique. */
   solution?: string;
 };
@@ -30,22 +31,51 @@ const CLIENTS: Client[] = [
     nom: "MTN",
     secteur: "Télécommunications",
     fichier: "mtn.png",
+    description:
+      "MTN Bénin est le principal réseau de téléphonie mobile au Bénin, filiale de la multinationale sud-africaine MTN Group. L'entreprise propose des services de télécommunications, d'accès internet et de paiement mobile",
     solution: "Stock Digit",
   },
   {
     nom: "Faghal & Fils",
     secteur: "Master Distributeur",
     fichier: "faghal.png",
+    description:
+      " Faghal et Fils est une société à responsabilité limitée (SARL) basée au Bénin, spécialisée dans la distribution, le commerce de gros, les magasins de vente et les services financiers de proximité. Elle est notamment connue en tant que partenaire majeur de réseaux mobiles et d'agences de transfert d'argent.",
     solution: "Stock Digit",
   },
   {
     nom: "Green-Pay",
     secteur: "Services financiers",
+    description:
+      " Green Pay est une fintech locale innovante conçue pour stimuler l'inclusion financière dans un pays peu bancarisé. Elle unifie l'écosystème des paiements pour les commerçants",
     fichier: "greenpay.png",
     solution: "CRM Digit",
   },
-  { nom: "Challenge SA", secteur: "Distribution", fichier: "challenge.png" },
-  { nom: "Keyla Beauty", secteur: "Cosmétique", fichier: "keyla.png" },
+  {
+    nom: "Challenge SA",
+    secteur: "Distribution",
+    fichier: "challenge.png",
+    description:
+      "Challenge S.A. est une entreprise spécialisée dans la location et la vente de véhicules premium et de luxe basée à Cotonou. Elle se positionne comme un partenaire de mobilité haut de gamme en proposant des modèles exclusifs, notamment des SUV, des berlines, et des véhicules 100 % électriques comme le Skywell ET5.",
+    solution: "Garage Digit",
+  },
+
+  {
+    nom: "Keyla Beauty",
+    secteur: "Cosmétique",
+    fichier: "keyla.png",
+    description:
+      "Keyla Beauty est une boutique et un distributeur officiel spécialisé dans l'achat et la vente de produits cosmétiques de marques et de parfumerie. L'enseigne (Keyla Distribution) agit notamment comme distributeur officiel de L'Oréal Dermatological Beauty et couvre plusieurs pays d'Afrique dont la Côte d'Ivoire, la RDC, la République du Congo et le Bénin.",
+    solution: "Shop Digit",
+  },
+  {
+    nom: "Coris Méso Finance ",
+    secteur: "Services financiers",
+    fichier: "coris.png",
+    description:
+      "Coris Méso Finance est une institution de microfinance basée au Bénin, filiale du groupe Coris Bank International. Elle propose des services financiers adaptés aux besoins des particuliers et des petites entreprises, favorisant l'inclusion financière et le développement économique local.",
+    solution: "Caution Digit",
+  },
 ];
 
 export default function Page() {
@@ -127,6 +157,10 @@ export default function Page() {
                     {c.secteur}
                   </span>
                 </div>
+
+                <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-muted">
+                  {c.description}
+                </p>
 
                 {c.solution ? (
                   <Link

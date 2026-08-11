@@ -30,7 +30,31 @@ const QUESTIONS = [
   ],
 ];
 
-export default function Page() {
+/** Correspondance entre le paramètre d'URL ?besoin=… et les libellés du formulaire. */
+const BESOIN_PAR_PARAM: Record<string, string> = {
+  stage: "Stage professionnel",
+  "stage-academique": "Stage académique",
+  web: "Développement web",
+  mobile: "Développement mobile",
+  infrastructure: "Infrastructure, système et réseau",
+  audit: "Étude, audit ou formation",
+  transformation: "Transformation digitale",
+};
+
+/** Quand on arrive via un lien "stage", seuls ces deux choix sont proposés. */
+const OPTIONS_STAGE = ["Stage professionnel", "Stage académique"];
+
+type PageProps = {
+  searchParams?: { besoin?: string };
+};
+
+export default function Page({ searchParams }: PageProps) {
+  const param = searchParams?.besoin;
+  const estStage = param === "stage" || param === "stage-academique";
+
+  const besoinInitial = param ? BESOIN_PAR_PARAM[param] : undefined;
+  const optionsBesoin = estStage ? OPTIONS_STAGE : undefined;
+
   return (
     <>
       <PageIntro
@@ -44,14 +68,20 @@ export default function Page() {
         chapo="Un premier échange d'une heure suffit à savoir si un projet tient debout. Il est gratuit et sans engagement."
       />
 
-      <section className="mx-auto max-w-[1400px] px-5 py-16 md:px-8 md:py-20">
+      <section
+        id="formulaire"
+        className="mx-auto max-w-[1400px] scroll-mt-24 px-5 py-16 md:px-8 md:py-20"
+      >
         <div className="grid gap-14 lg:grid-cols-[1.3fr_1fr]">
           <div>
             <h2 className="font-display text-[clamp(1.5rem,2.6vw,2rem)] leading-[1.05] tracking-[-0.035em]">
               Parler d&apos;un projet
             </h2>
             <div className="mt-8">
-              <ContactForm />
+              <ContactForm
+                besoinInitial={besoinInitial}
+                options={optionsBesoin}
+              />
             </div>
           </div>
 
