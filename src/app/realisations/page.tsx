@@ -51,6 +51,13 @@ const PROJETS = [
     resume:
       "CRM pour la gestion des activités internes de GreenPay : clients, transactions et suivi commercial.",
   },
+  {
+    num: "06",
+    nom: "Caution Digit",
+    type: "Plateforme web",
+    resume:
+      "Solution de gestion des cautions pour Coris Méso Finance, permettant de suivre les engagements et les remboursements.",
+  },
 ];
 
 export default function Page() {

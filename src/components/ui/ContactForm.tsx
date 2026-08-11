@@ -10,6 +10,8 @@ const BESOINS = [
   "Développement mobile",
   "Infrastructure, système et réseau",
   "Étude, audit ou formation",
+  "Stage professionnel",
+  "Stage académique",
   "Autre / je ne sais pas encore",
 ];
 
@@ -18,13 +20,25 @@ type Etat = "repos" | "envoi" | "succes" | "erreur";
 /** Numéro WhatsApp de DA Digit All, format international sans le +. */
 const WHATSAPP = "2290167086534";
 
-export default function ContactForm() {
+type Props = {
+  /** Pré-sélection du champ « besoin », ex. depuis /contact?besoin=Stage%20professionnel */
+  besoinInitial?: string;
+  /** Restreint les choix du menu « besoin » (ex. uniquement les deux types de stage). */
+  options?: string[];
+};
+
+export default function ContactForm({ besoinInitial, options }: Props) {
+  const listeBesoins = options && options.length > 0 ? options : BESOINS;
   const [prenom, setPrenom] = useState("");
   const [nom, setNom] = useState("");
   const [organisation, setOrganisation] = useState("");
   const [email, setEmail] = useState("");
   const [telephone, setTelephone] = useState("");
-  const [besoin, setBesoin] = useState(BESOINS[0]);
+  const [besoin, setBesoin] = useState(
+    besoinInitial && listeBesoins.includes(besoinInitial)
+      ? besoinInitial
+      : listeBesoins[0],
+  );
   const [message, setMessage] = useState("");
   const [site, setSite] = useState(""); // champ piège
   const [etat, setEtat] = useState<Etat>("repos");
@@ -227,7 +241,7 @@ export default function ContactForm() {
           onChange={(e) => setBesoin(e.target.value)}
           className={`mt-2 ${champ}`}
         >
-          {BESOINS.map((b) => (
+          {listeBesoins.map((b) => (
             <option key={b}>{b}</option>
           ))}
         </select>
