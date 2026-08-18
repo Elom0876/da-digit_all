@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import Button from "@/components/ui/Button";
+import SocialLinks from "@/components/ui/SocialLinks";
 
 const NAV = [
   { href: "/", label: "Accueil" },
@@ -119,6 +120,8 @@ export default function Header() {
           </nav>
 
           <div className="flex items-center gap-3">
+            <SocialLinks className="hidden sm:flex" />
+
             <a
               href="tel:+2290142260809"
               className="hidden font-mono text-[0.6875rem] uppercase tracking-[0.14em] text-muted transition-colors hover:text-ink xl:block"
@@ -202,6 +205,7 @@ export default function Header() {
             >
               +229 01 42 26 08 09
             </a>
+            <SocialLinks className="mt-6" iconClassName="h-[18px] w-[18px]" />
           </div>
         </nav>
       </div>
