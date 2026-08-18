@@ -1,6 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 
+import SocialLinks from "@/components/ui/SocialLinks";
+
 const NAV = [
   { href: "/", label: "Accueil" },
   { href: "/qui-sommes-nous", label: "Qui sommes-nous ?" },
@@ -10,13 +12,8 @@ const NAV = [
   { href: "/contact", label: "Contact" },
 ];
 
-/** Pied de page des pages intérieures. La page d'accueil n'en a pas :
- *  le parcours s'y termine sur l'appareil, pas sur un plan du site. */
 export default function Footer() {
   return (
-    /* Bande froide teintée d'encre : à côté du blanc cassé chaud du corps,
-       la différence de température suffit à séparer les deux zones sans
-       poser un aplat opaque. */
     <footer className="relative mt-28 border-t border-ink/12 bg-ink/[0.045] backdrop-blur-sm">
       <div className="mx-auto grid max-w-[1400px] gap-12 px-5 py-16 md:grid-cols-[1.3fr_1fr_1fr] md:px-8">
         <div>
@@ -75,6 +72,7 @@ export default function Footer() {
             <li className="text-muted">Cotonou, Bénin</li>
             <li className="text-muted">Lundi – vendredi, 8h – 18h</li>
           </ul>
+          <SocialLinks className="mt-5" />
         </div>
       </div>
 
